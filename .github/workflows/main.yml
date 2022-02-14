@@ -1,0 +1,28 @@
+# https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
+# https://github.com/actions/virtual-environments/blob/master/images/macos
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - ci/**
+  pull_request:
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.2.1.app
+
+jobs:
+  build-SherlockForms-Gallery:
+    runs-on: macos-11
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build SherlockForms-Gallery
+      run: make build-SherlockForms-Gallery
+
+  build-SherlockHUD-Demo:
+    runs-on: macos-11
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build SherlockHUD-Demo
+      run: make build-SherlockHUD-Demo
