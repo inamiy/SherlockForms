@@ -60,15 +60,13 @@ public struct NavigationLinkCell<Destination>: View
             icon
             Text(title)
         })
+            .modifier(formCellContentModifier)
 
         if isCopyable {
-            link
-                .modifier(formCellContentModifier)
-                .modifier(CopyableViewModifier(key: title))
+            link.modifier(CopyableViewModifier(key: title))
         }
         else {
             link
-                .modifier(formCellContentModifier)
         }
     }
 }

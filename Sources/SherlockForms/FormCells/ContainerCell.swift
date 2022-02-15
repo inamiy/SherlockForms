@@ -75,14 +75,15 @@ public struct ContainerCell<Container: View, Content: View>: View
     @ViewBuilder
     private var _body: some View
     {
-        if let copyableKeyValue = copyableKeyValue {
-            containerInit { content() }
+        let container = containerInit { content() }
             .modifier(formCellContentModifier)
-            .modifier(CopyableViewModifier(key: copyableKeyValue.key, value: copyableKeyValue.value))
+
+        if let copyableKeyValue = copyableKeyValue {
+            container
+                .modifier(CopyableViewModifier(key: copyableKeyValue.key, value: copyableKeyValue.value))
         }
         else {
-            containerInit { content() }
-            .modifier(formCellContentModifier)
+            container
         }
     }
 }
