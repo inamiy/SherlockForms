@@ -62,6 +62,7 @@ public struct CasePickerCell<Value>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(selection.wrappedValue)") : nil
         ) {
+            icon
             Picker(selection: selection, label: Text(title)) {
                 ForEach(Array(Value.allCases), id: \.self) { value in
                     Text("\(String(describing: value))")
@@ -107,6 +108,7 @@ public struct RawRepresentableCasePickerCell<Value>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(rawValue)") : nil
         ) {
+            icon
             Picker(selection: selection, label: Text(title)) {
                 ForEach(Array(Value.allCases), id: \.self) { value in
                     Text("\(String(describing: value.rawValue))")

@@ -55,6 +55,7 @@ public struct ArrayPickerCell<Value>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(values[selection.wrappedValue])") : nil
         ) {
+            icon
             Picker(selection: selection, label: Text(title)) {
                 ForEach(0 ..< values.count) { i in
                     Text("\(String(describing: values[i]))")

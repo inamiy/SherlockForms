@@ -75,6 +75,7 @@ public struct StepperCell: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: valueString_) : nil
         ) {
+            icon
             Text(title)
             Spacer()
 

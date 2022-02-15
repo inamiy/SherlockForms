@@ -40,6 +40,9 @@ struct RootView: View, SherlockView
 
     var body: some View
     {
+        let icon: Image? = nil
+        // let icon: Image? = Image(systemName: "applelogo")
+
         // NOTE:
         // `SherlockForm` and `xxxCell` is where all the search magic is happening!
         // Just treat `SherlockForm` as a normal `Form`, and use `Section` and plain SwiftUI views accordingly.
@@ -52,11 +55,12 @@ struct RootView: View, SherlockView
 
                 // Built-in form cells (using `hstackCell` internally).
                 // See `FormCells` source directory for more info.
-                textCell(title: "User", value: username)
-                arrayPickerCell(title: "Language", selection: $languageSelection, values: Constant.languages)
-                casePickerCell(title: "Status", selection: $status)
-                toggleCell(title: "Low Power Mode", isOn: $isLowPowerOn)
+                textCell(icon: icon, title: "User", value: username)
+                arrayPickerCell(icon: icon, title: "Language", selection: $languageSelection, values: Constant.languages)
+                casePickerCell(icon: icon, title: "Status", selection: $status)
+                toggleCell(icon: icon, title: "Low Power Mode", isOn: $isLowPowerOn)
                 sliderCell(
+                    icon: icon,
                     title: "Speed",
                     value: $speed,
                     in: 0.5 ... 2.0,
@@ -69,6 +73,7 @@ struct RootView: View, SherlockView
                     onEditingChanged: { print("onEditingChanged", $0) }
                 )
                 stepperCell(
+                    icon: icon,
                     title: "Font Size",
                     value: $fontSize,
                     in: 8 ... 24,
@@ -87,21 +92,24 @@ struct RootView: View, SherlockView
             // Navigation Link Cell (`navigationLinkCell`)
             Section {
                 navigationLinkCell(
+                    icon: icon,
                     title: "UserDefaults",
                     destination: { UserDefaultsListView() }
                 )
                 navigationLinkCell(
+                    icon: icon,
                     title: "App Info",
                     destination: { AppInfoView() }
                 )
                 navigationLinkCell(
+                    icon: icon,
                     title: "Device Info",
                     destination: { DeviceInfoView() }
                 )
-                navigationLinkCell(title: "Custom Page", destination: {
+                navigationLinkCell(icon: icon, title: "Custom Page", destination: {
                     CustomView()
                 })
-                navigationLinkCell(title: "Custom Page (Recursive)", destination: RootView.init)
+                navigationLinkCell(icon: icon, title: "Custom Page (Recursive)", destination: RootView.init)
             } header: {
                 Text("Navigation Link Cell")
             } footer: {
@@ -113,6 +121,7 @@ struct RootView: View, SherlockView
             // Buttons (`buttonCell`)
             Section {
                 buttonCell(
+                    icon: icon,
                     title: "Reset UserDefaults",
                     action: {
                         Helper.deleteUserDefaults()
@@ -121,6 +130,7 @@ struct RootView: View, SherlockView
                 )
 
                 buttonCell(
+                    icon: icon,
                     title: "Delete Caches",
                     action: {
                         try? Helper.deleteAllCaches()
@@ -131,6 +141,7 @@ struct RootView: View, SherlockView
                 if #available(iOS 15.0, *) {
                     // `buttonCell` with `confirmationDialog`.
                     buttonDialogCell(
+                        icon: icon,
                         title: "Delete All Contents",
                         dialogTitle: nil,
                         dialogButtons: { completion in
@@ -147,7 +158,7 @@ struct RootView: View, SherlockView
                     )
                 }
                 else {
-                    buttonCell(title: "Delete All Contents", action: {
+                    buttonCell(icon: icon, title: "Delete All Contents", action: {
                         try? Helper.deleteAllFilesAndCaches()
                     })
                 }
