@@ -133,6 +133,9 @@ struct RootView: View, SherlockView
                     icon: icon,
                     title: "Delete Caches",
                     action: {
+                        // Fake long task...
+                        try await Task.sleep(nanoseconds: 1_000_000_000)
+
                         try? Helper.deleteAllCaches()
                         showHUD(.init(message: "Finished deleting caches"))
                     }
@@ -144,17 +147,18 @@ struct RootView: View, SherlockView
                         icon: icon,
                         title: "Delete All Contents",
                         dialogTitle: nil,
-                        dialogButtons: { completion in
-                            Button("Delete All Contents", role: .destructive) {
+                        dialogButtons: [
+                            .init(title: "Delete All Contents", role: .destructive) {
+                                // Fake long task...
+                                try await Task.sleep(nanoseconds: 2_000_000_000)
+
                                 try? Helper.deleteAllFilesAndCaches()
                                 showHUD(.init(message: "Finished deleting all contents"))
-                                completion()
-                            }
-                            Button("Cancel", role: .cancel) {
+                            },
+                            .init(title: "Cancel", role: .cancel) {
                                 print("Cancelled")
-                                completion()
                             }
-                        }
+                        ]
                     )
                 }
                 else {

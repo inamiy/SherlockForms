@@ -7,13 +7,12 @@ extension SherlockView
 {
     /// `buttonCell` with `confirmationDialog`.
     @ViewBuilder
-    public func buttonDialogCell<Buttons>(
+    public func buttonDialogCell(
         icon: Image? = nil,
         title: String,
         dialogTitle: String? = nil,
-        @ViewBuilder dialogButtons: @escaping (_ completion: @escaping () -> Void) -> Buttons
+        dialogButtons: [ButtonDialogCell.DialogButton]
     ) -> ButtonDialogCell
-        where Buttons: View
     {
         ButtonDialogCell(
             icon: icon,
@@ -34,30 +33,28 @@ public struct ButtonDialogCell: View
     private let icon: Image?
     private let title: String
     private let dialogTitle: String?
-    private let dialogButtons: (_ completion: @escaping () -> Void) -> AnyView
+    private let dialogButtons: [DialogButton]
     private let canShowCell: @MainActor (_ keywords: [String]) -> Bool
+
+    @State private var confirmation: Void?
+    @State private var isLoading: Bool = false
+    @State private var currentTask: Task<Void, Error>?
 
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
-    @Environment(\.formCellContentModifier)
-    private var formCellContentModifier: AnyViewModifier
-
-    @State private var confirmation: Void?
-
-    internal init<Buttons>(
+    internal init(
         icon: Image? = nil,
         title: String,
         dialogTitle: String? = nil,
-        dialogButtons: @escaping (_ completion: @escaping () -> Void) -> Buttons,
+        dialogButtons: [DialogButton],
         canShowCell: @MainActor @escaping (_ keywords: [String]) -> Bool = { _ in true }
     )
-        where Buttons: View
     {
         self.icon = icon
         self.title = title
         self.dialogTitle = dialogTitle
-        self.dialogButtons = { AnyView(dialogButtons($0)) }
+        self.dialogButtons = dialogButtons
         self.canShowCell = canShowCell
     }
 
@@ -65,26 +62,76 @@ public struct ButtonDialogCell: View
     {
         let hasDialogTitle = !(dialogTitle ?? "").isEmpty
 
-        ButtonCell(
-            icon: icon,
-            title: title,
-            action: {
-                confirmation = ()
-            },
-            canShowCell: canShowCell
-        )
-            .formCellContentModifier {
-                $0.confirmationDialog(
-                    title: { _ in Text(dialogTitle ?? title) },
-                    titleVisibility: hasDialogTitle ? .visible : .automatic,
-                    unwrapping: $confirmation,
-                    actions: { _ in
-                        dialogButtons {
-                            confirmation = nil
+        HStackCell(
+            keywords: [title],
+            canShowCell: canShowCell,
+            copyableKeyValue: isCopyable ? .init(key: title) : nil
+        ) {
+            Group {
+                icon
+                Button(title, action: {
+                    currentTask?.cancel()
+                    isLoading = false
+                    confirmation = ()
+                })
+
+                if isLoading {
+                    Spacer()
+                    ProgressView()
+                        .onTapGesture {
+                            currentTask?.cancel()
+                            isLoading = false
                         }
-                    },
-                    message: { _ in }
-                )
+                }
             }
+            .confirmationDialog(
+                title: { _ in Text(dialogTitle ?? title) },
+                titleVisibility: hasDialogTitle ? .visible : .automatic,
+                unwrapping: $confirmation,
+                actions: { _ in
+                    ForEach(0 ..< dialogButtons.count) { i in
+                        let dialogButton = dialogButtons[i]
+                        let action = dialogButton.action
+                        Button.init(dialogButton.title, role: dialogButton.role, action: {
+                            currentTask?.cancel()
+                            currentTask = Task {
+                                confirmation = nil
+
+                                if dialogButton.role == .cancel {
+                                    try await action()
+                                } else {
+                                    isLoading = true
+                                    try await action()
+                                    isLoading = false
+                                }
+                            }
+                        })
+                    }
+                },
+                message: { _ in }
+            )
+        }
+    }
+}
+
+@available(iOS 15.0, *)
+extension ButtonDialogCell
+{
+    public struct DialogButton
+    {
+        let title: String
+        let role: ButtonRole?
+        let action: () async throws -> Void
+
+        public init(
+            title: String,
+            role: ButtonRole? = nil,
+            action: @escaping () async throws -> Void
+        )
+        {
+            self.title = title
+            self.role = role
+            self.action = action
+        }
     }
 }
