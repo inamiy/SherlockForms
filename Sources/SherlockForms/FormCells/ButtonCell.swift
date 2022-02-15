@@ -8,7 +8,7 @@ extension SherlockView
     public func buttonCell(
         icon: Image? = nil,
         title: String,
-        action: @escaping () -> Void
+        action: @escaping () async throws -> Void
     ) -> ButtonCell
     {
         ButtonCell(
@@ -27,8 +27,11 @@ public struct ButtonCell: View
 {
     private let icon: Image?
     private let title: String
-    private let action: () -> Void
+    private let action: () async throws -> Void
     private let canShowCell: @MainActor (_ keywords: [String]) -> Bool
+
+    @State private var isLoading: Bool = false
+    @State private var currentTask: Task<Void, Error>?
 
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
@@ -36,7 +39,7 @@ public struct ButtonCell: View
     internal init(
         icon: Image? = nil,
         title: String,
-        action: @escaping () -> Void,
+        action: @escaping () async throws -> Void,
         canShowCell: @MainActor @escaping (_ keywords: [String]) -> Bool = { _ in true }
     )
     {
@@ -55,10 +58,22 @@ public struct ButtonCell: View
         ) {
             icon
             Button(title, action: {
-                Task {
-                    action()
+                currentTask?.cancel()
+                currentTask = Task {
+                    isLoading = true
+                    try await action()
+                    isLoading = false
                 }
             })
+
+            if isLoading {
+                Spacer()
+                ProgressView()
+                    .onTapGesture {
+                        currentTask?.cancel()
+                        isLoading = false
+                    }
+            }
         }
     }
 }
