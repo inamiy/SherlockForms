@@ -54,5 +54,5 @@ struct UserDefaultsItemView: View, SherlockView
         }
     }
 
-    typealias KeyValue = UserDefaultsListView.KeyValue
+    typealias KeyValue = UserDefaultsListSectionsView.KeyValue
 }

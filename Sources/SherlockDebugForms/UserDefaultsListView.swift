@@ -3,10 +3,55 @@ import SherlockForms
 
 /// UserDefaults viewer.
 /// - Todo: Make editable.
-@MainActor
-public struct UserDefaultsListView: View, SherlockView
+public struct UserDefaultsListView: View
 {
-    @State public var searchText: String = ""
+    @State private var searchText: String = ""
+
+    private let userDefaults: UserDefaults
+
+    /// Custom list filtering.
+    private let listFilter: ListFilter?
+
+    private let maxCellHeight: CGFloat
+    private let maxRecentlyUsedCount: Int
+
+    public init(
+        userDefaults: UserDefaults = .standard,
+        listFilter: ListFilter? = nil,
+        maxCellHeight: CGFloat = 100,
+        maxRecentlyUsedCount: Int = 3
+    )
+    {
+        self.userDefaults = userDefaults
+        self.listFilter = listFilter
+        self.maxCellHeight = maxCellHeight
+        self.maxRecentlyUsedCount = maxRecentlyUsedCount
+    }
+
+    public var body: some View
+    {
+        SherlockForm(searchText: $searchText) {
+            UserDefaultsListSectionsView(
+                searchText: searchText,
+                userDefaults: userDefaults,
+                listFilter: listFilter,
+                maxCellHeight: maxCellHeight,
+                maxRecentlyUsedCount: maxRecentlyUsedCount
+            )
+        }
+        .navigationTitle("UserDefaults")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    public typealias ListFilter = (_ searchText: String, _ keywords: [String]) -> Bool
+}
+
+/// UserDefaults `Section`s, useful for presenting search results from ancestor screens.
+@MainActor
+public struct UserDefaultsListSectionsView: View, SherlockView
+{
+    public let searchText: String
+
     @State private var keyValues: [KeyValue] = []
 
     @AppStorage("com.inamiy.SherlockForms.UserDefaults.recently-used-keys")
@@ -22,16 +67,21 @@ public struct UserDefaultsListView: View, SherlockView
     private let maxCellHeight: CGFloat
     private let maxRecentlyUsedCount: Int
 
+    private let sectionHeader: (String) -> String
+
     @Environment(\.showHUD)
     private var showHUD: (HUDMessage) -> Void
 
     public init(
+        searchText: String,
         userDefaults: UserDefaults = .standard,
         listFilter: ListFilter? = nil,
         maxCellHeight: CGFloat = 100,
-        maxRecentlyUsedCount: Int = 3
+        maxRecentlyUsedCount: Int = 3,
+        sectionHeader: @escaping (String) -> String = { $0 }
     )
     {
+        self.searchText = searchText
         self.userDefaults = userDefaults
 
         self.keyValues = UserDefaults.standard.dictionaryRepresentation()
@@ -40,27 +90,26 @@ public struct UserDefaultsListView: View, SherlockView
         self.listFilter = listFilter
         self.maxCellHeight = maxCellHeight
         self.maxRecentlyUsedCount = maxRecentlyUsedCount
+        self.sectionHeader = sectionHeader
     }
 
     public var body: some View
     {
-        SherlockForm(searchText: $searchText) {
-            if !recentlyUsedKeys.strings.isEmpty && searchText.isEmpty {
+        Group {
+            if !recentlyUsedKeys.strings.isEmpty && searchText.isEmpty && maxRecentlyUsedCount > 0 {
                 Section {
                     recentlyUsedKeyValuesView
                 } header: {
-                    Text("Recent")
+                    sectionHeaderView(sectionHeader("Recent"))
                 }
             }
 
             Section {
                 allKeyValuesView
             } header: {
-                Text("All")
+                sectionHeaderView(sectionHeader("All"))
             }
         }
-        .navigationTitle("UserDefaults")
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(unwrapping: $presentingKey) { keyBinding in
             let key = keyBinding.wrappedValue
             if let index = keyValues.firstIndex(where: { $0.key == key }) {
@@ -152,7 +201,7 @@ public struct UserDefaultsListView: View, SherlockView
     private func deleteKey(_ key: String)
     {
         userDefaults.removeObject(forKey: key)
-        
+
         for i in keyValues.indices.reversed() where keyValues[i].key == key {
             keyValues.remove(at: i)
         }
@@ -176,12 +225,14 @@ public struct UserDefaultsListView: View, SherlockView
             try await Task.sleep(nanoseconds: 300_000_000)
 
             // Then, update `recentlyUsedKeys`.
-            await MainActor.run {
-                var keys = recentlyUsedKeys.strings
-                keys.removeAll(where: { $0 == key })
-                keys = Array(keys.suffix(maxRecentlyUsedCount - 1))
-                keys.append(key)
-                recentlyUsedKeys.strings = keys
+            if maxRecentlyUsedCount > 0 {
+                await MainActor.run {
+                    var keys = recentlyUsedKeys.strings
+                    keys.removeAll(where: { $0 == key })
+                    keys = Array(keys.suffix(maxRecentlyUsedCount - 1))
+                    keys.append(key)
+                    recentlyUsedKeys.strings = keys
+                }
             }
         }
     }
@@ -189,7 +240,7 @@ public struct UserDefaultsListView: View, SherlockView
     public typealias Key = String
     public typealias Value = Any
     public typealias KeyValue = (key: Key, value: Value)
-    public typealias ListFilter = (_ searchText: String, _ keywords: [String]) -> Bool
+    public typealias ListFilter = UserDefaultsListView.ListFilter
 }
 
 // MARK: - Strings

@@ -1,26 +1,42 @@
 import SwiftUI
 import Combine
 
+/// Screen for presenting Device-level information, e.g. Device name, system version, disk usage.
 public struct DeviceInfoView: View, SherlockView
 {
-    @StateObject private var timer: TimerWrapper = .init()
-
-    @State public var searchText: String = ""
+    @State public private(set) var searchText: String = ""
 
     public init() {}
 
     public var body: some View
     {
         SherlockForm(searchText: $searchText) {
-            _body
+            DeviceInfoSectionsView(searchText: searchText)
         }
         .formCellCopyable(true)
         .navigationTitle("Device Info")
         .navigationBarTitleDisplayMode(.inline)
     }
+}
 
-    @ViewBuilder
-    private var _body: some View
+/// DeviceInfo `Section`s, useful for presenting search results from ancestor screens.
+public struct DeviceInfoSectionsView: View, SherlockView
+{
+    @StateObject private var timer: TimerWrapper = .init()
+
+    public let searchText: String
+    private let sectionHeader: (String) -> String
+
+    public init(
+        searchText: String,
+        sectionHeader: @escaping (String) -> String = { $0 }
+    )
+    {
+        self.searchText = searchText
+        self.sectionHeader = sectionHeader
+    }
+
+    public var body: some View
     {
         Section {
             textCell(title: "Model", value: Device.current.localizedModel)
@@ -30,7 +46,7 @@ public struct DeviceInfoView: View, SherlockView
             textCell(title: "Jailbreak?", value: Device.current.isJailbreaked)
             textCell(title: "Low Power Mode?", value: Device.current.isLowPowerModeEnabled)
         } header: {
-            Text("General")
+            sectionHeaderView(sectionHeader("General"))
         }
 
         Section {
@@ -43,7 +59,7 @@ public struct DeviceInfoView: View, SherlockView
             textCell(title: "Battery", value: "\(Device.current.localizedBatteryLevel) / \(Device.current.localizedBatteryState)")
             textCell(title: "Thermal State", value: Device.current.localizedThermalState)
         } header: {
-            Text("Usage")
+            sectionHeaderView(sectionHeader("Usage"))
         }
 
         Group {
