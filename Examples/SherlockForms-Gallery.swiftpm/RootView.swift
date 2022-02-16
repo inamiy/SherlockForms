@@ -8,7 +8,7 @@ struct RootView: View, SherlockView
     /// NOTE:
     /// `searchText` is required for `SherlockView` protocol.
     /// This is the only requirement to define as `@State`, and pass it to `SherlockForm`.
-    @State public var searchText: String = ""
+    @State public private(set) var searchText: String = ""
 
     @AppStorage("username")
     private var username: String = "John Appleseed"
@@ -173,6 +173,24 @@ struct RootView: View, SherlockView
                     Text("Tip: Last button is ButtonDialog.")
                 }
             }
+
+            // Full-Text Search Result:
+            // Show navigationLink's search results as well.
+            if !searchText.isEmpty {
+                UserDefaultsListSectionsView(
+                    searchText: searchText,
+                    maxRecentlyUsedCount: 0,
+                    sectionHeader: { sectionHeader(prefixes: "UserDefaults", title: $0) }
+                )
+                AppInfoSectionsView(
+                    searchText: searchText,
+                    sectionHeader: { sectionHeader(prefixes: "App Info", title: $0) }
+                )
+                DeviceInfoSectionsView(
+                    searchText: searchText,
+                    sectionHeader: { sectionHeader(prefixes: "Device Info", title: $0) }
+                )
+            }
         }
         .navigationTitle("Settings")
         // NOTE:
@@ -211,6 +229,11 @@ struct RootView: View, SherlockView
                     }
             }
     }
+}
+
+private func sectionHeader(prefixes: String..., title: String) -> String
+{
+    (prefixes + [title]).filter { !$0.isEmpty }.joined(separator: " > ")
 }
 
 // MARK: - Previews
