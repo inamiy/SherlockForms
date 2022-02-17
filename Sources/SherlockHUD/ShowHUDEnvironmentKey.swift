@@ -2,7 +2,7 @@ import SwiftUI
 
 extension EnvironmentValues
 {
-    public var showHUD: (HUDMessage) -> Void
+    public var showHUD: @MainActor (HUDMessage) -> Void
     {
         get { self[ShowHUDEnvironmentKey.self] }
         set { self[ShowHUDEnvironmentKey.self] = newValue }
@@ -13,6 +13,6 @@ extension EnvironmentValues
 
 private struct ShowHUDEnvironmentKey: EnvironmentKey
 {
-    static let defaultValue: (HUDMessage) -> Void = { _ in }
+    static let defaultValue: @MainActor (HUDMessage) -> Void = { _ in }
 }
 

@@ -117,16 +117,16 @@ public struct ButtonDialogCell: View
 @available(iOS 15.0, *)
 extension ButtonDialogCell
 {
-    public struct DialogButton
+    public struct DialogButton: Sendable
     {
         let title: String
         let role: ButtonRole?
-        let action: () async throws -> Void
+        let action: @MainActor @Sendable () async throws -> Void
 
         public init(
             title: String,
             role: ButtonRole? = nil,
-            action: @escaping () async throws -> Void
+            action: @MainActor @Sendable @escaping () async throws -> Void
         )
         {
             self.title = title
