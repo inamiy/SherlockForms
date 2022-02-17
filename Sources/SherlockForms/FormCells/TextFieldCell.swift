@@ -7,7 +7,7 @@ extension SherlockView
     @ViewBuilder
     public func textFieldCell<Content>(
         icon: Image? = nil,
-        title: String,
+        title: String? = nil,
         value: Binding<String>,
         placeholder: String = "Input Value",
         modify: @escaping (TextField<Text>) -> Content
@@ -31,7 +31,7 @@ extension SherlockView
 public struct TextFieldCell<Content: View>: View
 {
     private let icon: Image?
-    private let title: String
+    private let title: String?
     private let value: Binding<String>
     private let placeholder: String
     private let modify: (TextField<Text>) -> Content
@@ -42,7 +42,7 @@ public struct TextFieldCell<Content: View>: View
 
     internal init(
         icon: Image? = nil,
-        title: String,
+        title: String?,
         value: Binding<String>,
         placeholder: String,
         modify: @escaping (TextField<Text>) -> Content,
@@ -65,11 +65,11 @@ public struct TextFieldCell<Content: View>: View
             copyableKeyValue: isCopyable ? .init(key: title, value: value.wrappedValue) : nil
         ) {
             icon
-            Text(title)
-            Spacer(minLength: 16)
-            if let value = value {
-                modify(TextField(placeholder, text: value))
+            if let title = title {
+                Text(title)
+                Spacer(minLength: 16)
             }
+            modify(TextField(placeholder, text: value))
         }
     }
 }
