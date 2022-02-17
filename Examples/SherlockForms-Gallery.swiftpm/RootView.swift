@@ -36,7 +36,7 @@ struct RootView: View, SherlockView
     /// Attaching `.enableSherlockHUD(true)` to topmost view will allow using `showHUD`.
     /// See `SherlockHUD` module for more information.
     @Environment(\.showHUD)
-    private var showHUD: (HUDMessage) -> Void
+    private var showHUD: @MainActor (HUDMessage) -> Void
 
     var body: some View
     {

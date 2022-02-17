@@ -1,13 +1,14 @@
 import SwiftUI
 
 /// `ViewModifier` for showing "Copy (key & value)" context-menu.
+@MainActor
 struct CopyableViewModifier: ViewModifier
 {
     private let key: String
     private let value: String?
 
     @Environment(\.showHUD)
-    private var showHUD: (HUDMessage) -> Void
+    private var showHUD: @MainActor (HUDMessage) -> Void
 
     init(key: String, value: String? = nil)
     {

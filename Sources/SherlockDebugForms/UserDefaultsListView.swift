@@ -70,7 +70,7 @@ public struct UserDefaultsListSectionsView: View, SherlockView
     private let sectionHeader: (String) -> String
 
     @Environment(\.showHUD)
-    private var showHUD: (HUDMessage) -> Void
+    private var showHUD: @MainActor (HUDMessage) -> Void
 
     public init(
         searchText: String,
