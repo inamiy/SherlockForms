@@ -69,7 +69,6 @@ public struct TextFieldCell<Content: View>: View
             Spacer(minLength: 16)
             if let value = value {
                 modify(TextField(placeholder, text: value))
-                    .multilineTextAlignment(.trailing)
             }
         }
     }

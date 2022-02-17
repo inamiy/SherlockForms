@@ -13,6 +13,12 @@ struct RootView: View, SherlockView
     @AppStorage("username")
     private var username: String = "John Appleseed"
 
+    @AppStorage("email")
+    private var email: String = "john@example.com"
+
+    @AppStorage("password")
+    private var password: String = "admin"
+
     /// Index of `Constant.languages`.
     @AppStorage("language")
     private var languageSelection: Int = 0
@@ -56,16 +62,25 @@ struct RootView: View, SherlockView
                 // Built-in form cells (using `hstackCell` internally).
                 // See `FormCells` source directory for more info.
                 textCell(icon: icon, title: "User", value: username)
-                textFieldCell(icon: icon, title: "User (input)", value: $username) {
-                    $0
-                        // .keyboardType(.numberPad)
-                        // .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .lineLimit(1)
-                        .disabled(false)
-                }
                 arrayPickerCell(icon: icon, title: "Language", selection: $languageSelection, values: Constant.languages)
                 casePickerCell(icon: icon, title: "Status", selection: $status)
                 toggleCell(icon: icon, title: "Low Power Mode", isOn: $isLowPowerOn)
+            } header: {
+                Text("Simple form cells")
+            } footer: {
+                if searchText.isEmpty {
+                    Text("Tip: Long-press cells to copy!")
+                }
+            }
+
+            Section {
+                textFieldCell(icon: icon, title: "User (Editable)", value: $username) {
+                    $0
+                        .multilineTextAlignment(.trailing)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .disabled(false)
+                }
+
                 sliderCell(
                     icon: icon,
                     title: "Speed",
@@ -89,11 +104,29 @@ struct RootView: View, SherlockView
                     valueString: { "\($0) pt" }
                 )
             } header: {
-                Text("Simple form cells")
-            } footer: {
-                if searchText.isEmpty {
-                    Text("Tip: Long-press cells to copy!")
+                Text("More form cells")
+            }
+
+            // NOTE:
+            // `hstackCell` is useful for more customizable HStack
+            // such as manually registering search keywords and configuring context-menu.
+            //
+            // Here, `hstackCell` is used with default configuration, which automatically hides
+            // whenever search happens, and no context-menu is set.
+            Section {
+                hstackCell {
+                    Text("Email").frame(width: 80, alignment: .leading)
+                    Spacer(minLength: 16)
+                    TextField("Input Email", text: $email)
                 }
+
+                hstackCell {
+                    Text("Password").frame(width: 80, alignment: .leading)
+                    Spacer(minLength: 16)
+                    SecureField("Input Password", text: $password)
+                }
+            } header: {
+                Text("HStack Cell (More customizable)")
             }
 
             // Navigation Link Cell (`navigationLinkCell`)
