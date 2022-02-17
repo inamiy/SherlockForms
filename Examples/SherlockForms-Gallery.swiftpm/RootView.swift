@@ -74,11 +74,16 @@ struct RootView: View, SherlockView
             }
 
             Section {
-                textFieldCell(icon: icon, title: "User (Editable)", value: $username) {
+                textFieldCell(icon: icon, title: "Editable", value: $username) {
                     $0
                         .multilineTextAlignment(.trailing)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .disabled(false)
+                }
+
+                textEditorCell(icon: icon, title: "Multiline Editable", value: $username) {
+                    $0
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxHeight: 100)
                 }
 
                 sliderCell(
