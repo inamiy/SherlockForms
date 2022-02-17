@@ -84,7 +84,7 @@ public struct UserDefaultsListSectionsView: View, SherlockView
         self.searchText = searchText
         self.userDefaults = userDefaults
 
-        self.keyValues = UserDefaults.standard.dictionaryRepresentation()
+        self.keyValues = userDefaults.dictionaryRepresentation()
             .sorted(by: { $0.0 < $1.0 })
 
         self.listFilter = listFilter
