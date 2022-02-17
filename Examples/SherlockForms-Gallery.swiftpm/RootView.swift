@@ -56,6 +56,13 @@ struct RootView: View, SherlockView
                 // Built-in form cells (using `hstackCell` internally).
                 // See `FormCells` source directory for more info.
                 textCell(icon: icon, title: "User", value: username)
+                textFieldCell(icon: icon, title: "User (input)", value: $username) {
+                    $0
+                        // .keyboardType(.numberPad)
+                        // .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .lineLimit(1)
+                        .disabled(false)
+                }
                 arrayPickerCell(icon: icon, title: "Language", selection: $languageSelection, values: Constant.languages)
                 casePickerCell(icon: icon, title: "Status", selection: $status)
                 toggleCell(icon: icon, title: "Low Power Mode", isOn: $isLowPowerOn)
