@@ -26,8 +26,7 @@ This repository consists of 3 modules:
 2. `SherlockDebugForms`: Useful app/device info-views and helper methods, specifically for debugging purpose.
     - [x] App Info view
     - [x] Device Info view
-    - [x] UserDefaults Viewer
-        - [ ] TODO: Editor
+    - [x] UserDefaults Editor
     - [ ] TODO: File Browser
     - [ ] TODO: Console Logger
 3. `SherlockHUD`: Standalone, simple-to-use Notification View (Toast) UI used in `SherlockForms`
@@ -131,17 +130,15 @@ struct RootView: View, SherlockView
                 buttonDialogCell(
                     title: "Delete All Contents",
                     dialogTitle: nil,
-                    dialogButtons: { completion in
-                        Button("Delete All Contents", role: .destructive) {
-                            try? Helper.deleteAllFilesAndCaches()
+                    dialogButtons: [
+                        .init(title: "Delete All Contents", role: .destructive) {
+                            try await deleteAllContents()
                             showHUD(.init(message: "Finished deleting all contents"))
-                            completion()
-                        }
-                        Button("Cancel", role: .cancel) {
+                        },
+                        .init(title: "Cancel", role: .cancel) {
                             print("Cancelled")
-                            completion()
                         }
-                    }
+                    ]
                 )
             }
         }
@@ -160,12 +157,15 @@ To get started:
 3. Inside view's `body`, use `SherlockForm` (just like normal `Form`), and use various built-in form cells:
     - Basic built-in cells
         - `textCell`
+        - `textFieldCell`
+        - `textEditorCell`
         - `buttonCell`
         - `buttonDialogCell` (iOS 15)
         - `navigationLinkCell`
         - `toggleCell`
         - `arrayPickerCell`
         - `casePickerCell`
+        - `datePickerCell`
         - `sliderCell`
         - `stepperCell`
     - More customizable cells (part of `ContainerCell`)
