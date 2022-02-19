@@ -29,7 +29,6 @@ struct TextEditorWithPlaceholder: View
             TextEditor(text: $text)
                 .padding(.horizontal, -4) // Remove TextEditor's extra padding.
         }
-        .frame(maxWidth: .infinity, alignment: .trailing)
     }
 
     private var placeholderAlignment: Alignment
