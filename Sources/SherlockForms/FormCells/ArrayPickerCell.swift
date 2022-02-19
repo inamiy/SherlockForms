@@ -53,7 +53,12 @@ public struct ArrayPickerCell<Value>: View
         HStackCell(
             keywords: [title],
             canShowCell: canShowCell,
-            copyableKeyValue: isCopyable ? .init(key: title, value: "\(values[selection.wrappedValue])") : nil
+            copyableKeyValue: isCopyable
+                ? .init(
+                    key: title,
+                    value: values[safe: selection.wrappedValue].map { "\($0)" }
+                )
+                : nil
         ) {
             icon
             Picker(selection: selection, label: Text(title)) {

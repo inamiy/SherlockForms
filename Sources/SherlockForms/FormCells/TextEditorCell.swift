@@ -23,6 +23,23 @@ extension SherlockView
             canShowCell: canShowCell
         )
     }
+
+    @ViewBuilder
+    public func textEditorCell(
+        icon: Image? = nil,
+        title: String? = nil,
+        value: Binding<String>,
+        placeholder: String = "Input Value"
+    ) -> TextEditorCell<AnyView>
+    {
+        textEditorCell(
+            icon: icon,
+            title: title,
+            value: value,
+            placeholder: placeholder,
+            modify: { $0 }
+        )
+    }
 }
 
 // MARK: - TextEditorCell
