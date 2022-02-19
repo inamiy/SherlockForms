@@ -29,6 +29,12 @@ struct RootView: View, SherlockView
     @AppStorage("low-power-mode")
     private var isLowPowerOn: Bool = false
 
+    @AppStorage("birthday")
+    private var birthday: SherlockDate = .init()
+
+    @AppStorage("alarm")
+    private var alarmDate: SherlockDate = .init()
+
     @AppStorage("speed")
     private var speed: Double = 1.0
 
@@ -99,6 +105,7 @@ struct RootView: View, SherlockView
                     maximumValueLabel: { Image(systemName: "hare") },
                     onEditingChanged: { print("onEditingChanged", $0) }
                 )
+
                 stepperCell(
                     icon: icon,
                     title: "Font Size",
@@ -107,6 +114,21 @@ struct RootView: View, SherlockView
                     step: 1,
                     maxFractionDigits: 0,
                     valueString: { "\($0) pt" }
+                )
+
+                datePickerCell(
+                    icon: icon,
+                    title: "Birthday",
+                    selection: $birthday.date,
+                    in: .distantPast ... Date(),
+                    displayedComponents: .date
+                )
+
+                datePickerCell(
+                    icon: icon,
+                    title: "Alarm",
+                    selection: $alarmDate.date,
+                    displayedComponents: [.hourAndMinute, .date]
                 )
             } header: {
                 Text("More form cells")
