@@ -6,24 +6,38 @@ struct UserDefaultsItemView: View, SherlockView
     // TODO: Add custom filtering to search per line.
     @State var searchText: String = ""
 
+    @State private var canEditAsString: Bool = false
+
     // TODO: Replace with `\.dismiss` for iOS 15.
     @Environment(\.presentationMode) private var presentationMode
 
-    private var keyValue: Binding<KeyValue>
+    private let key: String
+    private let value: Any
+    private var editableString: AppStorage<String>
 
-    init(keyValue: Binding<KeyValue>)
+    init(key: String, value: Any, userDefaults: UserDefaults = .standard)
     {
-        self.keyValue = keyValue
+        self.key = key
+        self.value = value
+
+        if let value = value as? String {
+            self.editableString = AppStorage(wrappedValue: value, key, store: userDefaults)
+            self.canEditAsString = true
+        }
+        else {
+            self.editableString = AppStorage(wrappedValue: "\(value)", key, store: userDefaults)
+            self.canEditAsString = false
+        }
     }
 
     var body: some View
     {
         NavigationView {
             SherlockForm(searchText: $searchText) {
-                _body
+                _body(canEditAsString: canEditAsString)
             }
             .formCellCopyable(true)
-            .navigationTitle(keyValue.wrappedValue.key)
+            .navigationTitle(key)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -31,26 +45,64 @@ struct UserDefaultsItemView: View, SherlockView
                         Image(systemName: "xmark")
                     })
                 }
+
+                ToolbarItemGroup(placement: .bottomBar) {
+                    if !canEditAsString {
+                        Spacer()
+                        Button(action: { canEditAsString = true }, label: {
+                            Image(systemName: "exclamationmark.triangle")
+                            Text("Edit as String (Unsafe)")
+                        })
+                        Spacer()
+                    }
+                }
             }
         }
     }
 
     @ViewBuilder
-    private var _body: some View
+    private func _body(canEditAsString: Bool) -> some View
     {
-        let key = keyValue.wrappedValue.key
-        let value = keyValue.wrappedValue.value
-
         Section {
-            textCell(title: key)
+            textCell(title: "\(key)")
         } header: {
             Text("Key")
         }
 
         Section {
-            textCell(title: "\(String(describing: value))")
+            textCell(title: "\(type(of: value))")
+        } header: {
+            Text("Type")
+        }
+
+        Section {
+            textEditorCell(value: editableString.projectedValue, modify: { textEditor in
+                textEditor
+                    .padding(canEditAsString ? 8 : 0)
+                    .disabled(!canEditAsString)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray.opacity(canEditAsString ? 0.25 : 0), lineWidth: 0.5)
+                    )
+                    .onChange(of: canEditAsString, perform: { canEditAsString in
+                        // NOTE:
+                        // Set the `editableString.wrappedValue` to tell `textEditor`
+                        // to update its scroll content.
+                        if canEditAsString {
+                            editableString.wrappedValue = editableString.wrappedValue
+                        }
+                    })
+            })
         } header: {
             Text("Value")
+        } footer: {
+            if !canEditAsString {
+                Text("""
+                    Note:
+                    Smart type recognition is not supported yet. To (unsafely) edit value as string, tap bottom button.
+                    """)
+                    .padding(.top, 16)
+            }
         }
     }
 

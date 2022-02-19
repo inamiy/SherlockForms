@@ -10,38 +10,38 @@ struct RootView: View, SherlockView
     /// This is the only requirement to define as `@State`, and pass it to `SherlockForm`.
     @State public private(set) var searchText: String = ""
 
-    @AppStorage("username")
+    @AppStorage(UserDefaultsStringKey.username.rawValue)
     private var username: String = "John Appleseed"
 
-    @AppStorage("email")
+    @AppStorage(UserDefaultsStringKey.email.rawValue)
     private var email: String = "john@example.com"
 
-    @AppStorage("password")
+    @AppStorage(UserDefaultsStringKey.password.rawValue)
     private var password: String = "admin"
 
     /// Index of `Constant.languages`.
-    @AppStorage("language")
+    @AppStorage(UserDefaultsIntKey.languageSelection.rawValue)
     private var languageSelection: Int = 0
 
-    @AppStorage("status")
+    @AppStorage(UserDefaultsStringKey.status.rawValue)
     private var status = Constant.Status.online
 
-    @AppStorage("low-power-mode")
+    @AppStorage(UserDefaultsBoolKey.lowPowerMode.rawValue)
     private var isLowPowerOn: Bool = false
 
-    @AppStorage("birthday")
-    private var birthday: SherlockDate = .init()
-
-    @AppStorage("alarm")
-    private var alarmDate: SherlockDate = .init()
-
-    @AppStorage("speed")
+    @AppStorage(UserDefaultsDoubleKey.speed.rawValue)
     private var speed: Double = 1.0
 
-    @AppStorage("font-size")
+    @AppStorage(UserDefaultsDoubleKey.fontSize.rawValue)
     private var fontSize: Double = 10
 
-    @AppStorage("test-long-user-defaults")
+    @AppStorage(UserDefaultsDateKey.birthday.rawValue)
+    private var birthday: SherlockDate = .init()
+
+    @AppStorage(UserDefaultsDateKey.alarm.rawValue)
+    private var alarmDate: SherlockDate = .init()
+
+    @AppStorage(UserDefaultsStringKey.testLongUserDefaults.rawValue)
     private var stringForTestingLongUserDefault: String = ""
 
     /// - Note:
@@ -161,7 +161,17 @@ struct RootView: View, SherlockView
                 navigationLinkCell(
                     icon: icon,
                     title: "UserDefaults",
-                    destination: { UserDefaultsListView() }
+                    destination: {
+                        UserDefaultsListView(
+                            editConfiguration: .init(
+                                boolKeys: Array(UserDefaultsBoolKey.allCases.map(\.rawValue)),
+                                stringKeys: Array(UserDefaultsStringKey.allCases.map(\.rawValue)),
+                                dateKeys: Array(UserDefaultsDateKey.allCases.map(\.rawValue)),
+                                intKeys: Array(UserDefaultsIntKey.allCases.map(\.rawValue)),
+                                doubleKeys: Array(UserDefaultsDoubleKey.allCases.map(\.rawValue))
+                            )
+                        )
+                    }
                 )
                 navigationLinkCell(
                     icon: icon,
@@ -264,9 +274,6 @@ struct RootView: View, SherlockView
         // Use `formCellCopyable` here (as a wrapper of entire `SherlockForm`) to allow ALL `xxxCell`s to be copyable.
         // To Make each cell copyable one by one instead, call it as a wrapper of each form cell.
         .formCellCopyable(true)
-        .onAppear {
-            stringForTestingLongUserDefault = Array(repeating: Constant.loremIpsum, count: 10).joined(separator: "\n")
-        }
     }
 
     /// Customized form cell using `vstackCell`.

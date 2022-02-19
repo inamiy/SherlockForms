@@ -59,6 +59,7 @@ public struct ToggleCell: View
             Toggle(isOn: isOn) {
                 EmptyView()
             }
+            .onTapGesture { /* Don't let wrapper view to steal this tap */ }
         }
     }
 }

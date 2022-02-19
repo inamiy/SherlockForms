@@ -15,5 +15,17 @@ enum Constant
         case online = "Online"
         case away = "Away"
         case offline = "Offline"
+
+        init?(rawValue: String)
+        {
+            for case_ in Self.allCases {
+                if case_.rawValue.lowercased() == rawValue.lowercased() {
+                    self = case_
+                    return
+                }
+            }
+
+            return nil
+        }
     }
 }
