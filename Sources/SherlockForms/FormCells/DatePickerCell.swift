@@ -61,7 +61,7 @@ public struct DatePickerCell: View
         HStackCell(
             keywords: [title, "\(selection.wrappedValue)"],
             canShowCell: canShowCell,
-            copyableKeyValue: isCopyable ? .init(key: title, value: "\(selection.wrappedValue)") : nil
+            copyableKeyValue: isCopyable ? .init(key: title, value: "\(SherlockDate(selection.wrappedValue).rawValue)") : nil
         ) {
             icon
             DatePicker(title, selection: selection, in: bounds, displayedComponents: displayedComponents)

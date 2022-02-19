@@ -35,7 +35,11 @@ public struct SherlockDate: RawRepresentable, Comparable
         l.date < r.date
     }
 
-    private static let formatter = ISO8601DateFormatter()
+    private static let formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = .autoupdatingCurrent
+        return formatter
+    }()
 }
 
 // MARK: - Binding
