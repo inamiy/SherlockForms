@@ -79,6 +79,7 @@ struct RootView: View, SherlockView
                 }
             }
 
+            // More form cells
             Section {
                 textFieldCell(icon: icon, title: "Editable", value: $username) {
                     $0
@@ -91,6 +92,24 @@ struct RootView: View, SherlockView
                         .multilineTextAlignment(.trailing)
                         .frame(maxHeight: 100)
                 }
+
+                arrayPickerCell(
+                    icon: icon,
+                    title: "Async Picker",
+                    selection: $languageSelection,
+                    accessory: {
+                        Text("Default")
+                            .foregroundColor(.gray)
+                        Spacer().frame(width: 8)
+                        ProgressView()
+                    },
+                    action: {
+                        // Simulating async work...
+                        try await Task.sleep(nanoseconds: 3_000_000_000)
+                        return Constant.languages
+                    },
+                    valueType: String.self
+                )
 
                 sliderCell(
                     icon: icon,
