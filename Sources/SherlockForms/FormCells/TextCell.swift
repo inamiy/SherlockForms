@@ -9,12 +9,31 @@ extension SherlockView
         icon: Image? = nil,
         title: String,
         value: Any? = nil
-    ) -> TextCell
+    ) -> TextCell<EmptyView>
     {
         TextCell(
             icon: icon,
             title: title,
             value: value,
+            accessory: {},
+            canShowCell: canShowCell
+        )
+    }
+
+    @ViewBuilder
+    public func textCell<Accessory>(
+        icon: Image? = nil,
+        title: String,
+        value: Any? = nil,
+        @ViewBuilder accessory: @escaping () -> Accessory
+    ) -> TextCell<Accessory>
+        where Accessory: View
+    {
+        TextCell(
+            icon: icon,
+            title: title,
+            value: value,
+            accessory: accessory,
             canShowCell: canShowCell
         )
     }
@@ -23,11 +42,13 @@ extension SherlockView
 // MARK: - TextCell
 
 @MainActor
-public struct TextCell: View
+public struct TextCell<Accessory>: View
+    where Accessory: View
 {
     private let icon: Image?
     private let title: String
     private let value: String?
+    private let accessory: () -> AnyView?
     private let canShowCell: @MainActor (_ keywords: [String]) -> Bool
 
     @Environment(\.formCellCopyable)
@@ -37,12 +58,14 @@ public struct TextCell: View
         icon: Image? = nil,
         title: String,
         value: Any?,
+        @ViewBuilder accessory: @escaping () -> Accessory,
         canShowCell: @MainActor @escaping (_ keywords: [String]) -> Bool = { _ in true }
     )
     {
         self.icon = icon
         self.title = title
         self.value = value.map { "\($0)" }
+        self.accessory = { AnyView(accessory()) }
         self.canShowCell = canShowCell
     }
 
@@ -58,6 +81,9 @@ public struct TextCell: View
             Spacer()
             if let value = value {
                 Text(value)
+            }
+            if let accessory = accessory() {
+                accessory
             }
         }
     }
