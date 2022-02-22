@@ -89,25 +89,26 @@ public struct ArrayPickerCell<Value>: View
                 )
                 : nil
         ) {
-            ZStack(alignment: .trailing) {
-                Group {
-                    icon
+            icon
 
-                    Picker(selection: selection) {
-                        ForEach(0 ..< values.count) { i in
-                            let value = values[i]
-                            Text("\(String(describing: value))")
-                                .tag(value)
-                        }
-                    } label: {
-                        Text(title)
-                    }
+            Picker(selection: selection) {
+                ForEach(0 ..< values.count) { i in
+                    let value = values[i]
+                    Text("\(String(describing: value))")
+                        .tag(value)
                 }
-
-                ProgressView()
-                    .padding(.trailing, 16)
-                    .opacity(values.isEmpty ? 1 : 0)
+            } label: {
+                Text(title)
             }
+            .overlay(
+                Group {
+                    Spacer()
+
+                    ProgressView()
+                        .padding(.trailing, 16)
+                        .opacity(values.isEmpty ? 1 : 0)
+                }
+            )
         }
     }
 }
