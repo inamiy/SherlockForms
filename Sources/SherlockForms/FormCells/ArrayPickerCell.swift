@@ -4,19 +4,20 @@ import SwiftUI
 
 extension SherlockView
 {
-    /// Picker cell with `selection: Binding<Int>` from `values` array.
+    /// Picker cell with `selection: Binding<Value>` from `values` array.
     @ViewBuilder
     public func arrayPickerCell<Value>(
         icon: Image? = nil,
         title: String,
-        selection: Binding<Int>,
+        selection: Binding<Value>,
         values: [Value]
     ) -> some View
+        where Value: Hashable
     {
         ArrayPickerCell(icon: icon, title: title, selection: selection, values: values, canShowCell: canShowCell)
     }
 
-    /// Async-picker cell with `selection: Binding<Int>` from `action`-fetched values.
+    /// Async-picker cell with `selection: Binding<Value>` from `action`-fetched values.
     ///
     /// 1. Before `action`: Shows `title` and `accessory`
     /// 2. After `action`: Shows ``ArrayPickerCell`` with values being fetched by `action`.
@@ -28,12 +29,12 @@ extension SherlockView
     public func arrayPickerCell<Value, Accessory>(
         icon: Image? = nil,
         title: String,
-        selection: Binding<Int>,
+        selection: Binding<Value>,
         @ViewBuilder accessory: @escaping () -> Accessory,
         action: @Sendable @escaping () async throws -> [Value],
         valueType: Value.Type = Value.self
     ) -> some View
-        where Accessory: View
+        where Value: Hashable, Accessory: View
     {
         AsyncArrayPickerCell(
             icon: icon,
@@ -50,10 +51,11 @@ extension SherlockView
 
 @MainActor
 public struct ArrayPickerCell<Value>: View
+    where Value: Hashable
 {
     private let icon: Image?
     private let title: String
-    private let selection: Binding<Int>
+    private let selection: Binding<Value>
     private let values: [Value]
     private let canShowCell: @MainActor (_ keywords: [String]) -> Bool
 
@@ -63,7 +65,7 @@ public struct ArrayPickerCell<Value>: View
     internal init(
         icon: Image? = nil,
         title: String,
-        selection: Binding<Int>,
+        selection: Binding<Value>,
         values: [Value],
         canShowCell: @MainActor @escaping (_ keywords: [String]) -> Bool = { _ in true }
     )
@@ -83,7 +85,7 @@ public struct ArrayPickerCell<Value>: View
             copyableKeyValue: isCopyable
                 ? .init(
                     key: title,
-                    value: values[safe: selection.wrappedValue].map { "\($0)" }
+                    value: "\(selection.wrappedValue)"
                 )
                 : nil
         ) {
@@ -93,7 +95,9 @@ public struct ArrayPickerCell<Value>: View
 
                     Picker(selection: selection) {
                         ForEach(0 ..< values.count) { i in
-                            Text("\(String(describing: values[i]))")
+                            let value = values[i]
+                            Text("\(String(describing: value))")
+                                .tag(value)
                         }
                     } label: {
                         Text(title)
@@ -112,11 +116,11 @@ public struct ArrayPickerCell<Value>: View
 
 @MainActor
 public struct AsyncArrayPickerCell<Value, Accessory>: View
-    where Accessory: View
+    where Value: Hashable, Accessory: View
 {
     private let icon: Image?
     private let title: String
-    private let selection: Binding<Int>
+    private let selection: Binding<Value>
     private let accessory: () -> AnyView
     private let action: () async throws -> [Value]
     private let canShowCell: @MainActor (_ keywords: [String]) -> Bool
@@ -129,7 +133,7 @@ public struct AsyncArrayPickerCell<Value, Accessory>: View
     internal init(
         icon: Image? = nil,
         title: String,
-        selection: Binding<Int>,
+        selection: Binding<Value>,
         @ViewBuilder accessory: @escaping () -> Accessory,
         action: @Sendable @escaping () async throws -> [Value],
         canShowCell: @MainActor @escaping (_ keywords: [String]) -> Bool = { _ in true }

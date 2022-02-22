@@ -9,12 +9,13 @@ enum UserDefaultsStringKey: String, CaseIterable
     case email = "email"
     case password = "password"
     case status = "status"
+    case languageSelection = "language"
     case testLongUserDefaults = "test-long-user-defaults"
 }
 
 enum UserDefaultsIntKey: String, CaseIterable
 {
-    case languageSelection = "language"
+    case languageIntSelection = "language-int"
 }
 
 enum UserDefaultsDoubleKey: String, CaseIterable
