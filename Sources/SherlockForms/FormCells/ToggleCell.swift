@@ -55,10 +55,13 @@ public struct ToggleCell: View
         ) {
             icon
             Text(title)
+
             Spacer()
+
             Toggle(isOn: isOn) {
                 EmptyView()
             }
+            .labelsHidden()
             .onTapGesture { /* Don't let wrapper view to steal this tap */ }
         }
     }
