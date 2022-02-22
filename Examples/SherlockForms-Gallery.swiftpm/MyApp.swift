@@ -45,10 +45,15 @@ struct MyApp: App
                     forKey: UserDefaultsStringKey.password.rawValue
                 )
 
+                UserDefaults.standard.set(
+                    Constant.languages[0],
+                    forKey: UserDefaultsStringKey.languageSelection.rawValue
+                )
+
                 // Index of `Constant.languages`.
                 UserDefaults.standard.set(
                     0,
-                    forKey: UserDefaultsIntKey.languageSelection.rawValue
+                    forKey: UserDefaultsIntKey.languageIntSelection.rawValue
                 )
 
                 UserDefaults.standard.set(

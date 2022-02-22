@@ -19,9 +19,12 @@ struct RootView: View, SherlockView
     @AppStorage(UserDefaultsStringKey.password.rawValue)
     private var password: String = "admin"
 
+    @AppStorage(UserDefaultsStringKey.languageSelection.rawValue)
+    private var languageSelection: String = Constant.languages[0]
+
     /// Index of `Constant.languages`.
-    @AppStorage(UserDefaultsIntKey.languageSelection.rawValue)
-    private var languageSelection: Int = 0
+    @AppStorage(UserDefaultsIntKey.languageIntSelection.rawValue)
+    private var languageIntSelection: Int = 0
 
     @AppStorage(UserDefaultsStringKey.status.rawValue)
     private var status = Constant.Status.online
@@ -92,6 +95,20 @@ struct RootView: View, SherlockView
                         .multilineTextAlignment(.trailing)
                         .frame(maxHeight: 100)
                 }
+
+                // Array picker cell that uses `languageIntSelection` (index) as state.
+                arrayPickerCell(
+                    icon: icon,
+                    title: "Int Picker",
+                    selection: Binding(
+                        get: { Constant.languages[languageIntSelection] },
+                        set: { newValue in
+                            guard let index = Constant.languages.firstIndex(of: newValue) else { return }
+                            languageIntSelection = index
+                        }
+                    ),
+                    values: Constant.languages
+                )
 
                 arrayPickerCell(
                     icon: icon,
