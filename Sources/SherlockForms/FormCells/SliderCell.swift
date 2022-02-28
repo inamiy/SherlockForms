@@ -90,6 +90,9 @@ public struct SliderCell<Label, ValueLabel>: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init<Value>(
         icon: Image? = nil,
         title: String,
@@ -135,7 +138,7 @@ public struct SliderCell<Label, ValueLabel>: View
             copyableKeyValue: isCopyable ? .init(key: title, value: valueString_) : nil
         ) {
             HStack {
-                icon
+                icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
                 Text(title)
                 Spacer()
                 Text(valueString_)

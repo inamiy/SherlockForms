@@ -42,6 +42,9 @@ public struct CasePickerCell<Value>: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -62,7 +65,7 @@ public struct CasePickerCell<Value>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(selection.wrappedValue)") : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Picker(selection: selection, label: Text(title)) {
                 ForEach(Array(Value.allCases), id: \.self) { value in
                     Text("\(String(describing: value))")
@@ -86,6 +89,9 @@ public struct RawRepresentableCasePickerCell<Value>: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -108,7 +114,7 @@ public struct RawRepresentableCasePickerCell<Value>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(rawValue)") : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Picker(selection: selection, label: Text(title)) {
                 ForEach(Array(Value.allCases), id: \.self) { value in
                     Text("\(String(describing: value.rawValue))")

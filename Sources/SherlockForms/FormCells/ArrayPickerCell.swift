@@ -62,6 +62,9 @@ public struct ArrayPickerCell<Value>: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -89,7 +92,7 @@ public struct ArrayPickerCell<Value>: View
                 )
                 : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
 
             Picker(selection: selection) {
                 ForEach(0 ..< values.count) { i in
@@ -130,6 +133,9 @@ public struct AsyncArrayPickerCell<Value, Accessory>: View
 
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
+
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
 
     internal init(
         icon: Image? = nil,
