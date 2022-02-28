@@ -33,6 +33,9 @@ public struct ToggleCell: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -53,7 +56,7 @@ public struct ToggleCell: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(isOn.wrappedValue)") : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Text(title)
 
             Spacer()

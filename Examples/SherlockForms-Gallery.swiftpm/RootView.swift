@@ -55,9 +55,6 @@ struct RootView: View, SherlockView
 
     var body: some View
     {
-        let icon: Image? = nil
-        // let icon: Image? = Image(systemName: "applelogo")
-
         // NOTE:
         // `SherlockForm` and `xxxCell` is where all the search magic is happening!
         // Just treat `SherlockForm` as a normal `Form`, and use `Section` and plain SwiftUI views accordingly.
@@ -310,6 +307,14 @@ struct RootView: View, SherlockView
         // Use `formCellCopyable` here (as a wrapper of entire `SherlockForm`) to allow ALL `xxxCell`s to be copyable.
         // To Make each cell copyable one by one instead, call it as a wrapper of each form cell.
         .formCellCopyable(true)
+        // For aligning icons and texts horizontally.
+        .formCellIconWidth(30)
+    }
+
+    private var icon: Image?
+    {
+        // return nil
+        return Image(systemName: ["applelogo", "iphone", "macwindow"].randomElement()!)
     }
 
     /// Customized form cell using `vstackCell`.

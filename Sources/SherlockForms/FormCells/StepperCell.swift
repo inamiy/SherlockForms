@@ -45,6 +45,9 @@ public struct StepperCell: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -75,7 +78,7 @@ public struct StepperCell: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: valueString_) : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Text(title)
             Spacer()
 

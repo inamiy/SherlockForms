@@ -36,6 +36,9 @@ public struct ButtonCell: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -56,7 +59,7 @@ public struct ButtonCell: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title) : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Button(title, action: {
                 currentTask?.cancel()
                 currentTask = Task {

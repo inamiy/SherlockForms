@@ -54,6 +54,9 @@ public struct TextCell<Accessory>: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -76,7 +79,7 @@ public struct TextCell<Accessory>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: value) : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Text(title)
             Spacer()
             if let value = value {

@@ -39,6 +39,9 @@ public struct DatePickerCell: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -63,7 +66,7 @@ public struct DatePickerCell: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: "\(SherlockDate(selection.wrappedValue).rawValue)") : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             DatePicker(title, selection: selection, in: bounds, displayedComponents: displayedComponents)
         }
     }

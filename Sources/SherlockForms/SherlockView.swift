@@ -1,3 +1,5 @@
+import CoreGraphics
+
 /// A protocol that interacts with ``SherlockForm``.
 @MainActor
 public protocol SherlockView

@@ -33,6 +33,9 @@ public struct NavigationLinkCell<Destination>: View
     @Environment(\.formCellContentModifier)
     private var formCellContentModifier: AnyViewModifier
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String,
@@ -57,7 +60,7 @@ public struct NavigationLinkCell<Destination>: View
     private var _body: some View
     {
         let link = NavigationLink(destination: LazyView(destination()), label: {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             Text(title)
         })
             .modifier(formCellContentModifier)

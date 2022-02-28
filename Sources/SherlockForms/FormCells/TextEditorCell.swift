@@ -57,6 +57,9 @@ public struct TextEditorCell<Content: View>: View
     @Environment(\.formCellCopyable)
     private var isCopyable: Bool
 
+    @Environment(\.formCellIconWidth)
+    private var iconWidth: CGFloat?
+
     internal init(
         icon: Image? = nil,
         title: String?,
@@ -81,7 +84,7 @@ public struct TextEditorCell<Content: View>: View
             canShowCell: canShowCell,
             copyableKeyValue: isCopyable ? .init(key: title, value: value.wrappedValue) : nil
         ) {
-            icon
+            icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
             if let title = title {
                 Text(title)
                 Spacer(minLength: 16)
