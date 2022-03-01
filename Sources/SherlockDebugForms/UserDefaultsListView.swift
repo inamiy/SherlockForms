@@ -139,7 +139,7 @@ public struct UserDefaultsListSectionsView: View, SherlockView
 
     public var body: some View
     {
-        Group {
+        let sections = Group {
             if !recentlyUsedKeys.strings.isEmpty && searchText.isEmpty && maxRecentlyUsedCount > 0 {
                 Section {
                     recentlyUsedKeyValuesView
@@ -157,12 +157,30 @@ public struct UserDefaultsListSectionsView: View, SherlockView
         .onReceive(notifier.objectWillChange) { _ in
             keyValues = userDefaults.getKeyValues()
         }
-        .sheet(unwrapping: $presentingKey) { keyBinding in
-            let key = keyBinding.wrappedValue
-            if let index = keyValues.firstIndex(where: { $0.key == key }) {
-                let value = keyValues[index].value
-                UserDefaultsItemView(key: key, value: value, userDefaults: userDefaults)
-            }
+
+        if #available(iOS 15.0, *) {
+            sections
+                .sheet(unwrapping: $presentingKey) { keyBinding in
+                    let key = keyBinding.wrappedValue
+                    if let index = keyValues.firstIndex(where: { $0.key == key }) {
+                        let value = keyValues[index].value
+                        UserDefaultsItemView(key: key, value: value, userDefaults: userDefaults)
+                    }
+                }
+        }
+        else {
+            // Workaround for iOS 14 `Form`'s inner view + `sheet` breaking table layout.
+            sections
+                .background(
+                    EmptyView()
+                        .sheet(unwrapping: $presentingKey) { keyBinding in
+                            let key = keyBinding.wrappedValue
+                            if let index = keyValues.firstIndex(where: { $0.key == key }) {
+                                let value = keyValues[index].value
+                                UserDefaultsItemView(key: key, value: value, userDefaults: userDefaults)
+                            }
+                        }
+                )
         }
     }
 
