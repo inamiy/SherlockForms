@@ -38,7 +38,7 @@ public struct SherlockForm<Content: View>: View
         let form = formBuilder { content() }
 
         if #available(iOS 15.0, *) {
-            let searchableForm = form
+            form
                 .searchable(
                     text: searchText,
                     placement: .navigationBarDrawer(displayMode: .automatic),
@@ -49,11 +49,10 @@ public struct SherlockForm<Content: View>: View
                 .onSubmit(of: .search) {
                     hideKeyboard()
                 }
-            return AnyView(searchableForm)
         }
         else {
             // FIXME: No searching support for iOS 14 yet.
-            return AnyView(form)
+            form
         }
     }
 }
