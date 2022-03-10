@@ -32,6 +32,9 @@ struct RootView: View, SherlockView
     @AppStorage(UserDefaultsBoolKey.lowPowerMode.rawValue)
     private var isLowPowerOn: Bool = false
 
+    @AppStorage(UserDefaultsBoolKey.slowAnimation.rawValue)
+    private var isSlowAnimation: Bool = false
+
     @AppStorage(UserDefaultsDoubleKey.speed.rawValue)
     private var speed: Double = 1.0
 
@@ -284,6 +287,25 @@ struct RootView: View, SherlockView
                 }
             }
 
+            // Slow motion (`toggleCell`)
+            Section {
+                toggleCell(icon: icon, title: "Slow Animation", isOn: $isSlowAnimation)
+                    .onChange(of: isSlowAnimation) { isSlowAnimation in
+                        // Workaround:
+                        // Immediately setting animation speed after `Toggle` change will cause
+                        // its malformed UI, so add `sleep` to workaround (NOTE: 500 ms is not enough).
+                        Task { @MainActor in
+                            try await Task.sleep(nanoseconds: 1_000_000_000)
+                            setAnimationSpeed(isSlowAnimation: isSlowAnimation)
+                        }
+                    }
+                    .onAppear {
+                        setAnimationSpeed(isSlowAnimation: isSlowAnimation)
+                    }
+            } header: {
+                Text("Slow motion")
+            }
+
             // Full-Text Search Result:
             // Show navigationLink's search results as well.
             if !searchText.isEmpty {
@@ -346,9 +368,22 @@ struct RootView: View, SherlockView
     }
 }
 
+// MARK: - Private
+
 private func sectionHeader(prefixes: String..., title: String) -> String
 {
     (prefixes + [title]).filter { !$0.isEmpty }.joined(separator: " > ")
+}
+
+@MainActor
+private func setAnimationSpeed(isSlowAnimation: Bool)
+{
+    if isSlowAnimation {
+        Helper.setAnimationSpeed(0.1)
+    }
+    else {
+        Helper.setAnimationSpeed(1)
+    }
 }
 
 // MARK: - Previews
