@@ -1,6 +1,7 @@
 enum UserDefaultsBoolKey: String, CaseIterable
 {
     case lowPowerMode = "low-power-mode"
+    case slowAnimation = "slow-animation"
 }
 
 enum UserDefaultsStringKey: String, CaseIterable
