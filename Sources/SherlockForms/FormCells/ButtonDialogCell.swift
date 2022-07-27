@@ -92,7 +92,7 @@ public struct ButtonDialogCell: View
                 titleVisibility: hasDialogTitle ? .visible : .automatic,
                 unwrapping: $confirmation,
                 actions: { _ in
-                    ForEach(0 ..< dialogButtons.count) { i in
+                    ForEach(0 ..< dialogButtons.count, id: \.self) { i in
                         let dialogButton = dialogButtons[i]
                         let action = dialogButton.action
                         Button.init(dialogButton.title, role: dialogButton.role, action: {

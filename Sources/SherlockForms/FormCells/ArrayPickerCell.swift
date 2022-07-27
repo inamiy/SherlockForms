@@ -95,7 +95,7 @@ public struct ArrayPickerCell<Value>: View
             icon.frame(minWidth: iconWidth, maxWidth: iconWidth)
 
             Picker(selection: selection) {
-                ForEach(0 ..< values.count) { i in
+                ForEach(0 ..< values.count, id: \.self) { i in
                     let value = values[i]
                     Text("\(String(describing: value))")
                         .tag(value)

@@ -36,7 +36,6 @@ extension SherlockView
     where
         Data: MutableCollection & RangeReplaceableCollection,
         Data.Element: NestedListItem & Identifiable,
-        Data.Element.ID: Hashable,
         RowContent: View
     {
         nestedList(
