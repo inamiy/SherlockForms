@@ -223,6 +223,12 @@ struct RootView: View, SherlockView
                     CustomView()
                 })
                 navigationLinkCell(icon: icon, title: "Custom Page (Recursive)", destination: RootView.init)
+                navigationLinkCell(icon: icon, title: "Simple List", destination: {
+                    ListView()
+                })
+                navigationLinkCell(icon: icon, title: "Nested List", destination: {
+                    NestedListView()
+                })
             } header: {
                 Text("Navigation Link Cell")
             } footer: {
