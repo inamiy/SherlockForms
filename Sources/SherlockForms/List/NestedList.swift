@@ -11,7 +11,7 @@ extension SherlockView
     public func nestedList<Data, ID, RowContent>(
         data: Data,
         id: KeyPath<Data.Element, ID>,
-        rowContent: @escaping (Data.Element) -> RowContent
+        @ViewBuilder rowContent: @escaping (Data.Element) -> RowContent
     ) -> some View
     where
         Data: MutableCollection & RangeReplaceableCollection,
@@ -31,7 +31,7 @@ extension SherlockView
     @ViewBuilder
     public func nestedList<Data, RowContent>(
         data: Data,
-        rowContent: @escaping (Data.Element) -> RowContent
+        @ViewBuilder rowContent: @escaping (Data.Element) -> RowContent
     ) -> some View
     where
         Data: MutableCollection & RangeReplaceableCollection,
@@ -70,7 +70,7 @@ where
         data: Data,
         id: KeyPath<Data.Element, ID>,
         canShowCell: @MainActor @escaping (_ keywords: [String]) -> Bool,
-        rowContent: @escaping (Data.Element) -> RowContent
+        @ViewBuilder rowContent: @escaping (Data.Element) -> RowContent
     )
     {
         self.data = data
