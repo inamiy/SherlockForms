@@ -154,7 +154,7 @@ To get started:
 
 1. Conform your Settings view to `protocol SherlockView`
 2. Add `@State var searchText: String` to your view
-3. Inside view's `body`, use `SherlockForm` (just like normal `Form`), and use various built-in form cells:
+3. Inside view's `body`, use `SherlockForm` (just like normal `Form`), and use various built-in form components:
     - Basic built-in cells
         - `textCell`
         - `textFieldCell`
@@ -168,6 +168,9 @@ To get started:
         - `datePickerCell`
         - `sliderCell`
         - `stepperCell`
+    - List
+        - `simpleList`
+        - `nestedList`
     - More customizable cells (part of `ContainerCell`)
         - `hstackCell`
         - `vstackCell`
