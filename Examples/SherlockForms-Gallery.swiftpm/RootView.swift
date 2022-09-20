@@ -70,10 +70,10 @@ struct RootView: View, SherlockView
 
                 // Built-in form cells (using `hstackCell` internally).
                 // See `FormCells` source directory for more info.
-                textCell(icon: icon, title: "User", value: username)
-                arrayPickerCell(icon: icon, title: "Language", selection: $languageSelection, values: Constant.languages)
-                casePickerCell(icon: icon, title: "Status", selection: $status)
-                toggleCell(icon: icon, title: "Low Power Mode", isOn: $isLowPowerOn)
+                textCell(icon: Image(systemName: "person.fill"), title: "User", value: username)
+                arrayPickerCell(icon: Image(systemName: "character.bubble"), title: "Language", selection: $languageSelection, values: Constant.languages)
+                casePickerCell(icon: Image(systemName: "person.badge.clock"), title: "Status", selection: $status)
+                toggleCell(icon: Image(systemName: "battery.25"), title: "Low Power Mode", isOn: $isLowPowerOn)
             } header: {
                 Text("Simple form cells")
             } footer: {
@@ -84,13 +84,13 @@ struct RootView: View, SherlockView
 
             // More form cells
             Section {
-                textFieldCell(icon: icon, title: "Editable", value: $username) {
+                textFieldCell(icon: Image(systemName: "character.cursor.ibeam"), title: "Editable", value: $username) {
                     $0
                         .multilineTextAlignment(.trailing)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
 
-                textEditorCell(icon: icon, title: "Multiline Editable", value: $username) {
+                textEditorCell(icon: Image(systemName: "character.cursor.ibeam"), title: "Multiline Editable", value: $username) {
                     $0
                         .multilineTextAlignment(.trailing)
                         .frame(maxHeight: 100)
@@ -98,7 +98,7 @@ struct RootView: View, SherlockView
 
                 // Array picker cell that uses `languageIntSelection` (index) as state.
                 arrayPickerCell(
-                    icon: icon,
+                    icon: Image(systemName: "filemenu.and.cursorarrow"),
                     title: "Int Picker",
                     selection: Binding(
                         get: { Constant.languages[languageIntSelection] },
@@ -111,7 +111,7 @@ struct RootView: View, SherlockView
                 )
 
                 arrayPickerCell(
-                    icon: icon,
+                    icon: Image(systemName: "filemenu.and.cursorarrow"),
                     title: "Async Picker",
                     selection: $languageSelection,
                     accessory: {
@@ -129,7 +129,7 @@ struct RootView: View, SherlockView
                 )
 
                 sliderCell(
-                    icon: icon,
+                    icon: Image(systemName: "speedometer"),
                     title: "Speed",
                     value: $speed,
                     in: 0.5 ... 2.0,
@@ -143,7 +143,7 @@ struct RootView: View, SherlockView
                 )
 
                 stepperCell(
-                    icon: icon,
+                    icon: Image(systemName: "textformat.size"),
                     title: "Font Size",
                     value: $fontSize,
                     in: 8 ... 24,
@@ -153,7 +153,7 @@ struct RootView: View, SherlockView
                 )
 
                 datePickerCell(
-                    icon: icon,
+                    icon: Image(systemName: "birthday.cake"),
                     title: "Birthday",
                     selection: $birthday.date,
                     in: .distantPast ... Date(),
@@ -161,7 +161,7 @@ struct RootView: View, SherlockView
                 )
 
                 datePickerCell(
-                    icon: icon,
+                    icon: Image(systemName: "alarm"),
                     title: "Alarm",
                     selection: $alarmDate.date,
                     displayedComponents: [.hourAndMinute, .date]
@@ -195,7 +195,7 @@ struct RootView: View, SherlockView
             // Navigation Link Cell (`navigationLinkCell`)
             Section {
                 navigationLinkCell(
-                    icon: icon,
+                    icon: Image(systemName: "person.fill"),
                     title: "UserDefaults",
                     destination: {
                         UserDefaultsListView(
@@ -210,23 +210,23 @@ struct RootView: View, SherlockView
                     }
                 )
                 navigationLinkCell(
-                    icon: icon,
+                    icon: Image(systemName: "app.badge"),
                     title: "App Info",
                     destination: { AppInfoView() }
                 )
                 navigationLinkCell(
-                    icon: icon,
+                    icon: Image(systemName: "iphone"),
                     title: "Device Info",
                     destination: { DeviceInfoView() }
                 )
-                navigationLinkCell(icon: icon, title: "Custom Page", destination: {
+                navigationLinkCell(icon: Image(systemName: "doc.richtext"), title: "Custom Page", destination: {
                     CustomView()
                 })
-                navigationLinkCell(icon: icon, title: "Custom Page (Recursive)", destination: RootView.init)
-                navigationLinkCell(icon: icon, title: "Simple List", destination: {
+                navigationLinkCell(icon: Image(systemName: "doc.richtext"), title: "Custom Page (Recursive)", destination: RootView.init)
+                navigationLinkCell(icon: Image(systemName: "list.bullet"), title: "Simple List", destination: {
                     ListView()
                 })
-                navigationLinkCell(icon: icon, title: "Nested List", destination: {
+                navigationLinkCell(icon: Image(systemName: "list.bullet.indent"), title: "Nested List", destination: {
                     NestedListView()
                 })
             } header: {
@@ -240,7 +240,7 @@ struct RootView: View, SherlockView
             // Buttons (`buttonCell`)
             Section {
                 buttonCell(
-                    icon: icon,
+                    icon: Image(systemName: "trash"),
                     title: "Reset UserDefaults",
                     action: {
                         Helper.deleteUserDefaults()
@@ -249,7 +249,7 @@ struct RootView: View, SherlockView
                 )
 
                 buttonCell(
-                    icon: icon,
+                    icon: Image(systemName: "trash"),
                     title: "Delete Caches",
                     action: {
                         // Fake long task...
@@ -263,7 +263,7 @@ struct RootView: View, SherlockView
                 if #available(iOS 15.0, *) {
                     // `buttonCell` with `confirmationDialog`.
                     buttonDialogCell(
-                        icon: icon,
+                        icon: Image(systemName: "trash"),
                         title: "Delete All Contents",
                         dialogTitle: nil,
                         dialogButtons: [
@@ -281,7 +281,7 @@ struct RootView: View, SherlockView
                     )
                 }
                 else {
-                    buttonCell(icon: icon, title: "Delete All Contents", action: {
+                    buttonCell(icon: Image(systemName: "person.fill"), title: "Delete All Contents", action: {
                         try? Helper.deleteAllFilesAndCaches()
                     })
                 }
@@ -295,7 +295,7 @@ struct RootView: View, SherlockView
 
             // Slow motion (`toggleCell`)
             Section {
-                toggleCell(icon: icon, title: "Slow Animation", isOn: $isSlowAnimation)
+                toggleCell(icon: Image(systemName: "figure.roll"), title: "Slow Animation", isOn: $isSlowAnimation)
                     .onChange(of: isSlowAnimation) { isSlowAnimation in
                         // Workaround:
                         // Immediately setting animation speed after `Toggle` change will cause
@@ -337,12 +337,6 @@ struct RootView: View, SherlockView
         .formCellCopyable(true)
         // For aligning icons and texts horizontally.
         .formCellIconWidth(30)
-    }
-
-    private var icon: Image?
-    {
-        // return nil
-        return Image(systemName: ["applelogo", "iphone", "macwindow"].randomElement()!)
     }
 
     /// Customized form cell using `vstackCell`.
