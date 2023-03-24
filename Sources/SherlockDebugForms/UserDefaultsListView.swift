@@ -222,10 +222,9 @@ public struct UserDefaultsListSectionsView: View, SherlockView
                 }
             }
             else if editConfiguration.dateKeys.contains(key) {
-                if let date_ = value as? Date,
-                   let date = SherlockDate(date_)
+                if let date_ = value as? Date
                 {
-                    dateValueCell(key: key, date: date)
+                    dateValueCell(key: key, date: SherlockDate(date_))
                 }
                 else if let string = value as? String,
                     let date = SherlockDate(rawValue: string)
